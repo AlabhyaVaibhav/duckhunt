@@ -141,7 +141,17 @@ $('#btnHand').addEventListener('click', async () => {
 
 // ---- main loop
 let last = performance.now();
+let lastError = 0;
 function frame(now) {
+  // Schedule first: an error in one frame must never freeze the game.
+  requestAnimationFrame(frame);
+  try {
+    step(now);
+  } catch (err) {
+    if (now - lastError > 5000) { lastError = now; console.error(err); }
+  }
+}
+function step(now) {
   const dt = Math.min(0.05, Math.max(0, (now - last) / 1000));
   last = now;
 
@@ -174,6 +184,5 @@ function frame(now) {
 
   game.update(dt);
   game.draw(ctx);
-  requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

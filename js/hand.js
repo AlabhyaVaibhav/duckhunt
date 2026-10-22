@@ -17,6 +17,12 @@ const COCK_AT = 0.65; // fraction of the learned range
 const FIRE_AT = 0.35;
 const SHOT_COOLDOWN_MS = 220;
 const HISTORY_MS = 600;
+// A hand sliding into view gives rough landmarks for a few frames: wait before
+// showing it, and longer before letting it fire.
+const SHOW_AFTER_FRAMES = 3;
+const ARM_AFTER_MS = 300;
+// A gap this long between tracked frames (tracking stalled) counts as a lost hand.
+const STALL_MS = 250;
 
 const CONNECTIONS = [
   [0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [7, 8],
@@ -66,6 +72,10 @@ export class HandGun {
     this.history = []; // { t, x, y, thumb } as shown on screen
     this.lastShot = 0;
     this.lastVideoTime = -1;
+    this.seen = 0;          // consecutive frames with a hand
+    this.trackedSince = 0;  // when the current run of frames began
+    this.lastSeenAt = 0;
+    this.lastError = 0;
     // Portion of the camera frame that maps to the full screen; smaller = less arm travel.
     this.box = { x0: 0.18, x1: 0.82, y0: 0.12, y1: 0.72 };
   }
@@ -107,17 +117,26 @@ export class HandGun {
     if (this.video.currentTime === this.lastVideoTime) return;
     this.lastVideoTime = this.video.currentTime;
 
-    const res = this.landmarker.detectForVideo(this.video, now);
-    const lm = res.landmarks?.[0];
-    const wl = res.worldLandmarks?.[0];
+    let res;
+    try {
+      res = this.landmarker.detectForVideo(this.video, now);
+    } catch (err) {
+      // Never let a tracking error stop the game; report it now and then.
+      if (now - this.lastError > 5000) { this.lastError = now; console.error('Hand tracking error', err); }
+      res = null;
+    }
+    const lm = res?.landmarks?.[0];
+    const wl = res?.worldLandmarks?.[0];
     if (!lm || !wl) {
-      this.visible = false;
-      this.cocked = false;
-      this.fx.reset(); this.fy.reset();
-      this.history = [];
+      this.lose();
       this.drawOverlay(null);
       return;
     }
+    // After a stall the old aim and thumb history are stale: start afresh.
+    if (this.seen && now - this.lastSeenAt > STALL_MS) this.lose();
+    if (this.seen++ === 0) this.trackedSince = now;
+    this.lastSeenAt = now;
+    if (this.seen < SHOW_AFTER_FRAMES) { this.drawOverlay(lm); return; }
     this.visible = true;
 
     // Aim.
@@ -145,13 +164,22 @@ export class HandGun {
       this.cocked = true;
     } else if (this.cocked && this.thumb < this.fireLevel) {
       this.cocked = false;
-      if (this.gunPose && now - this.lastShot > SHOT_COOLDOWN_MS) {
+      const settled = now - this.trackedSince > ARM_AFTER_MS;
+      if (this.gunPose && settled && now - this.lastShot > SHOT_COOLDOWN_MS) {
         this.lastShot = now;
         const aim = this.aimAtDropStart();
         this.onFire(aim.x, aim.y);
       }
     }
     this.drawOverlay(lm);
+  }
+
+  lose() {
+    this.visible = false;
+    this.cocked = false;
+    this.seen = 0;
+    this.fx.reset(); this.fy.reset();
+    this.history = [];
   }
 
   // Tracks this player's thumb-up and thumb-down levels: snaps quickly to new
