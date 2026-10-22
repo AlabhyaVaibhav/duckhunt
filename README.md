@@ -1,10 +1,18 @@
 # Duck Hunt: Finger Gun
 
+![Duck Hunt: Finger Gun](brand/x-header-1500x500.png)
+
 A browser remake of the NES classic. Your webcam watches your hand: point a finger gun at the screen to aim, and drop your thumb like a hammer to shoot.
 
-## Play
+**Play it: [duckhunt-two.vercel.app](https://duckhunt-two.vercel.app)**. Free, no install, no controller.
 
-https://duckhunt-two.vercel.app, a static Vercel site with no build step. Redeploy with `vercel deploy --prod`.
+![A duck flies up, the finger gun fires, the duck falls and the dog holds it up](brand/x-post-shot.gif)
+
+![How to play: 1. make a finger gun, 2. point at the duck, 3. drop your thumb to shoot](brand/x-post-howto-1600x900.png)
+
+## Deploy
+
+A static Vercel site with no build step. Redeploy with `vercel deploy --prod`. Vercel Web Analytics counts page views (cookieless); the script only loads on the deployed site.
 
 ## Run locally
 
