@@ -4,6 +4,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Duck Hunt: Finger Gun</title>
+  <meta name="description" content="The NES classic in your browser. Point a finger gun at your webcam, aim with your index finger and drop your thumb to shoot.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Duck Hunt: Finger Gun">
+  <meta property="og:description" content="Shoot ducks with just your hand. Can you beat my score?">
+  <meta property="og:image" content="https://duckhunt-two.vercel.app/assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -30,6 +38,7 @@
   <div id="start" class="overlay">
     <div class="panel">
       <h1><span>DUCK</span> <span>HUNT</span></h1>
+      <p id="challenge" class="challenge"></p>
       <p class="how">Make a finger gun 👉 at the screen. Aim with your index finger. <b>Drop your thumb</b> like a hammer to shoot.</p>
       <div class="buttons">
         <button id="btnHand" autofocus>PLAY WITH HAND</button>
@@ -37,6 +46,28 @@
       </div>
       <p id="startMsg" class="msg"></p>
       <p class="keys">New to the finger gun? A short practice runs first; replay it any time from PRACTICE on the menu. Sit about an arm's length away with good light.<br>Keys: <kbd>F</kbd> full screen · <kbd>1</kbd>/<kbd>2</kbd> start a game · <kbd>T</kbd> practice · <kbd>Space</kbd> fire · <kbd>P</kbd> pause · <kbd>M</kbd> mute · <kbd>C</kbd> camera preview</p>
+      <p class="keys"><a href="support.html">Help &amp; support</a></p>
+    </div>
+  </div>
+
+  <div id="share" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="shareTitle">
+    <div class="panel share">
+      <h2 id="shareTitle">GAME OVER</h2>
+      <p class="score"><span id="shareScore">0</span></p>
+      <p id="shareDetail" class="detail"></p>
+      <p id="shareVs" class="vs"></p>
+      <img id="shareImg" alt="Your score card">
+      <p class="detail">Challenge your friends to beat it</p>
+      <div class="buttons">
+        <button id="shareNative">SHARE</button>
+        <button id="shareX" class="alt">X</button>
+        <button id="shareWa" class="alt">WHATSAPP</button>
+        <button id="shareCopy" class="alt">COPY LINK</button>
+        <button id="shareSave" class="alt">SAVE IMAGE</button>
+      </div>
+      <p id="shareStatus" class="msg" aria-live="polite"></p>
+      <div class="buttons"><button id="shareClose">PLAY AGAIN</button></div>
+      <p class="keys"><a href="support.html">Help &amp; support</a></p>
     </div>
   </div>
 

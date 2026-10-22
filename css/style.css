@@ -121,3 +121,20 @@ button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #2c5c00; }
 button:disabled { opacity: 0.5; cursor: wait; }
 kbd { color: var(--ink); }
 .msg { color: var(--orange); min-height: 1em; }
+
+a { color: var(--blue); }
+a:hover { color: var(--ink); }
+.challenge { color: var(--orange); }
+.challenge:empty { display: none; }
+
+/* Share panel */
+.panel.share { max-height: calc(100vh - 32px); overflow-y: auto; }
+.share h2 { margin: 0 0 16px; font-size: 20px; font-weight: normal; color: var(--blue); }
+.share .score { font-size: 28px; color: var(--ink); margin-bottom: 10px; }
+.share .detail { color: #9c9c9c; font-size: 9px; margin-bottom: 10px; }
+.share .vs { color: var(--orange); }
+.share .vs:empty { display: none; }
+.share img { display: block; width: 100%; max-width: 420px; margin: 0 auto 14px; image-rendering: pixelated; border: 2px solid #333; }
+.share .buttons + .msg { margin-top: 14px; }
+.share .buttons button { font-size: 9px; padding: 10px 12px; }
+#shareClose { font-size: 11px; padding: 12px 16px; margin-top: 4px; }

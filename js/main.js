@@ -3,6 +3,7 @@ import { W, H, setViewWidth } from './scene.js';
 import { Sfx } from './audio.js';
 import { HandGun } from './hand.js';
 import { Game, tutorialDone } from './game.js';
+import { SharePanel, challengeFromUrl } from './share.js';
 
 const $ = s => document.querySelector(s);
 const canvas = $('#game');
@@ -13,7 +14,24 @@ await buildSprites();
 
 const sfx = new Sfx();
 const game = new Game(sfx);
-const hand = new HandGun({ width: W, height: H, onFire: (x, y) => game.fire(x, y) });
+const share = new SharePanel();
+// While the share panel is up, finger-gun shots shouldn't start a game behind it.
+const hand = new HandGun({ width: W, height: H, onFire: (x, y) => { if (!share.visible) game.fire(x, y); } });
+
+// ---- sharing: a friend's link sets a score to beat; game over offers to share ours.
+game.challenge = challengeFromUrl();
+if (game.challenge) {
+  $('#challenge').textContent = `A friend scored ${game.challenge.toLocaleString('en-US')}. Can you beat it?`;
+}
+game.onGameOver = result => {
+  // Wait for the dog's laugh before taking the picture for the score card.
+  setTimeout(() => {
+    const shot = document.createElement('canvas');
+    shot.width = canvas.width; shot.height = canvas.height;
+    shot.getContext('2d').drawImage(canvas, 0, 0);
+    share.show(result, shot, game.challenge);
+  }, 1500);
+};
 
 // ---- layout: 240 NES pixels tall, as wide as the screen's shape allows, so
 // the game fills the window edge to edge with square pixels.
@@ -54,6 +72,10 @@ canvas.addEventListener('pointerdown', e => {
 let currentAim = null;
 window.addEventListener('keydown', e => {
   if ($('#start').hidden === false) return;
+  if (share.visible) {
+    if (e.key === 'Escape') share.hide();
+    return;
+  }
   switch (e.key) {
     case ' ':
       e.preventDefault();

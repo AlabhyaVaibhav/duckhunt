@@ -29,6 +29,10 @@ The first time you play with your hand, a short **practice** runs before the gam
 
 The game goes full screen when you press Play; `F` toggles it.
 
+After a game over, a panel offers to share a score card (system share sheet, X, WhatsApp, copy link, or save the image). Shared links end in `?beat=<score>`, so a friend who opens one sees the score to beat on the start panel and title screen.
+
+`support.html` is the help page: setup, camera and tracking fixes, controls, rules, privacy and a progress reset.
+
 Mouse and keyboard work too: click to shoot, `Space` fires at the crosshair, `1`/`2` start Game A/B, `P` pauses, `M` mutes, `C` toggles the camera preview.
 
 ## Rules (as on the NES)
@@ -52,6 +56,7 @@ Hit boxes are a few pixels more forgiving than the Zapper's, because hand tracki
 | `js/draw.js` | Shared drawing helpers and palette |
 | `js/scene.js` | Composes tree, bush, grass and dirt |
 | `js/audio.js` | Synthesised sound effects and jingles (WebAudio) |
+| `js/share.js` | Game-over share panel, score card image, `?beat=` challenge links |
 | `js/main.js` | Boot, input, main loop |
 
 ## Art credits
@@ -69,5 +74,7 @@ python3 tools/extract_nes.py path/to/nes_rip.png assets/              # dog + du
 python3 tools/segment.py path/to/super_duck_hunt.gif out/              # finds every sprite -> out/boxes.json
 python3 tools/extract.py path/to/super_duck_hunt.gif out/boxes.json assets/   # scenery, icon, logo
 ```
+
+`assets/og.png` is the link-preview image; rebuild it with `python3 tools/og.py . path/to/PressStart2P-Regular.ttf`.
 
 Sound and music are synthesised in code (original tunes).

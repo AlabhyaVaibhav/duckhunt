@@ -144,6 +144,9 @@ export class Game {
     this.popups = [];
     this.shake = 0;
     this.paused = false;
+    this.ducksHit = 0;
+    this.challenge = null;  // score from a friend's share link, shown on the title
+    this.onGameOver = null; // called with { score, round, mode, ducks }
   }
 
   // ---- input
@@ -176,6 +179,7 @@ export class Game {
       this.addScore(pts);
       this.popups.push({ x: duck.x, y: duck.y - 16, text: pts, t: 0 });
       this.hits[duck.slot] = true;
+      this.ducksHit++;
     }
   }
 
@@ -206,6 +210,7 @@ export class Game {
     this.mode = mode;
     this.round = 1;
     this.score = 0;
+    this.ducksHit = 0;
     this.startRound();
   }
 
@@ -324,6 +329,7 @@ export class Game {
             this.go('gameOver');
             this.dog.popup('laugh', W / 2, 3.2);
             this.sfx.gameOver();
+            this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit });
           } else if (n === DUCKS_PER_ROUND) {
             this.addScore(perfectBonus(this.round));
             this.go('perfect');
@@ -463,6 +469,7 @@ export class Game {
       text(ctx, m.label, OX + 42, m.y, on ? WHITE : ORANGE);
     }
     text(ctx, `TOP SCORE = ${this.top}`, W / 2, 176, GREEN, { align: 'center' });
+    if (this.challenge) text(ctx, `BEAT ${this.challenge}!`, W / 2, 186, ORANGE, { align: 'center' });
 
     text(ctx, 'POINT A FINGER GUN', W / 2, 196, WHITE, { align: 'center' });
     text(ctx, 'DROP THUMB TO SHOOT', W / 2, 208, WHITE, { align: 'center' });
