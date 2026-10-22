@@ -22,6 +22,7 @@
       <a href="#controls">Controls</a>
       <a href="#rules">Rules</a>
       <a href="#share">Sharing</a>
+      <a href="#chip-in">Chip in</a>
       <a href="#privacy">Privacy</a>
       <a href="#reset">Reset</a>
     </nav>
@@ -119,6 +120,33 @@
       <p>After a game over you can share a score card through your device's share sheet, X or WhatsApp, copy a link, or save the image. Your link includes your score, so friends who open it see the score they have to beat.</p>
     </section>
 
+    <section id="chip-in">
+      <h2>Chip in</h2>
+      <p>The game is free and has no ads. If you enjoy it, you can chip in with UPI. It goes towards:</p>
+      <ul>
+        <li>keeping the game online and maintained</li>
+        <li>the occasional treat for Bailey, the cat who supervises every commit</li>
+      </ul>
+      <div class="chipin" data-chipin>
+        <fieldset class="chip-amounts">
+          <legend>Pick an amount</legend>
+          <label class="chip"><input type="radio" name="chipAmount" value="50"><span>₹50</span></label>
+          <label class="chip"><input type="radio" name="chipAmount" value="100" checked><span>₹100</span></label>
+          <label class="chip"><input type="radio" name="chipAmount" value="150"><span>₹150</span></label>
+          <label class="chip"><input type="radio" name="chipAmount" value="500"><span>₹500</span></label>
+        </fieldset>
+        <div class="chip-pay">
+          <a class="chip-app" href="#" data-chip-app>Pay <span data-chip-label>₹100</span> with a UPI app</a>
+          <div class="chip-qr">
+            <img data-chip-qr src="assets/qr/upi-100.svg" width="168" height="168" alt="UPI QR code for ₹100">
+            <p class="chip-hint"><span class="on-hover">Scan with any UPI app: GPay, PhonePe, Paytm or BHIM.</span><span class="on-touch">Or scan this from another phone.</span></p>
+          </div>
+        </div>
+        <p class="chip-id">UPI ID <code data-chip-id></code> <button type="button" class="chip-copy" data-chip-copy>Copy</button><span class="chip-status" role="status" aria-live="polite" data-chip-status></span></p>
+      </div>
+      <p class="fine">This is a voluntary gift to an individual, not a purchase or a charity donation. You don't get anything in return, it isn't tax-deductible, and UPI payments can't be reversed from this site. Please only send what you're happy to give. Payment happens entirely in your UPI app. This site never sees your bank or card details.</p>
+    </section>
+
     <section id="privacy">
       <h2>Privacy</h2>
       <ul>
@@ -126,6 +154,7 @@
         <li>The tracking code and model download from Google's and jsDelivr's content networks, and the font from Google Fonts.</li>
         <li>Your top score and whether you finished practice are saved in your browser only.</li>
         <li>Sharing sends only what you choose to post, through the app you pick.</li>
+        <li>Chipping in happens entirely in your UPI app, between your bank and mine. Like any UPI transfer, I'll see the name and UPI ID your bank shares with the payment, and I never publish them.</li>
       </ul>
     </section>
 
@@ -146,6 +175,30 @@
   </footer>
 
   <script>
+    // "Chip in" box. Keep UPI in step with tools/upi_qr.py, which draws the QR codes.
+    const UPI = { id: 'alabhya.vaibhav1997-1@okhdfcbank', name: 'Alabhya Vaibhav', note: 'Chip in: Duck Hunt Finger Gun' };
+    // The ID goes in raw: several UPI apps reject "%40" in place of "@".
+    const upiLink = amount => `upi://pay?pa=${UPI.id}&pn=${encodeURIComponent(UPI.name)}`
+      + `&am=${amount.toFixed(2)}&cu=INR&tn=${encodeURIComponent(UPI.note)}`;
+    const chip = document.querySelector('[data-chipin]');
+    const app = chip.querySelector('[data-chip-app]');
+    const qr = chip.querySelector('[data-chip-qr]');
+    const pick = amount => {
+      app.href = upiLink(amount);
+      chip.querySelector('[data-chip-label]').textContent = `₹${amount}`;
+      qr.src = `assets/qr/upi-${amount}.svg`;
+      qr.alt = `UPI QR code for ₹${amount}`;
+    };
+    chip.querySelector('[data-chip-id]').textContent = UPI.id;
+    chip.querySelectorAll('input[name=chipAmount]').forEach(r => r.addEventListener('change', () => pick(Number(r.value))));
+    pick(Number(chip.querySelector('input[name=chipAmount]:checked').value));
+    chip.querySelector('[data-chip-copy]').addEventListener('click', async () => {
+      const status = chip.querySelector('[data-chip-status]');
+      try { await navigator.clipboard.writeText(UPI.id); status.textContent = 'Copied'; }
+      catch { status.textContent = 'Select and copy it instead'; }
+      setTimeout(() => { status.textContent = ''; }, 2400);
+    });
+
     document.getElementById('resetBtn').addEventListener('click', () => {
       const msg = document.getElementById('resetMsg');
       try {

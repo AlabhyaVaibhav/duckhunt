@@ -31,7 +31,7 @@ The game goes full screen when you press Play; `F` toggles it.
 
 After a game over, a panel offers to share a score card (system share sheet, X, WhatsApp, copy link, or save the image). Shared links end in `?beat=<score>`, so a friend who opens one sees the score to beat on the start panel and title screen.
 
-`support.html` is the help page: setup, camera and tracking fixes, controls, rules, privacy and a progress reset.
+`support.html` is the help page: setup, camera and tracking fixes, controls, rules, a UPI "Chip in" box, privacy and a progress reset. The UPI QR codes in `assets/qr/` come from `tools/upi_qr.py` (needs `qrcode`); keep its ID and amounts in step with the page.
 
 Mouse and keyboard work too: click to shoot, `Space` fires at the crosshair, `1`/`2` start Game A/B, `P` pauses, `M` mutes, `C` toggles the camera preview.
 

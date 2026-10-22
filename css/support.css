@@ -95,3 +95,53 @@ footer {
 footer img { flex: none; border-radius: 4px; }
 footer p { margin: 0 0 6px; }
 .fine { color: var(--muted); font-size: 13px; }
+
+/* Chip in (UPI) */
+.chipin { display: grid; gap: 16px; margin: 6px 0 16px; }
+.chip-amounts { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-amounts legend { font-size: 13px; color: var(--muted); margin-bottom: 8px; padding: 0; }
+.chip { position: relative; }
+.chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 18px;
+  cursor: pointer;
+  border: 2px solid var(--line);
+  font: 600 15px var(--body); /* the pixel font has no ₹ */
+}
+.chip span:hover { border-color: var(--orange); color: var(--orange); }
+.chip input:checked + span { background: var(--orange); border-color: var(--orange); color: #000; }
+.chip input:focus-visible + span { outline: 2px solid var(--orange); outline-offset: 2px; }
+.chip-pay { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.chip-app {
+  font: 10px var(--pixel);
+  padding: 14px 16px;
+  color: #000;
+  background: var(--orange);
+  text-decoration: none;
+  box-shadow: 4px 4px 0 #8c3c0c;
+}
+.chip-app:hover { color: #000; }
+.chip-qr { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.chip-qr img { display: block; width: 168px; height: 168px; background: #fff; border-radius: 6px; }
+.chip-hint { margin: 0; max-width: 24ch; font-size: 13px; color: var(--muted); }
+.chip-id { margin: 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.chip-id code { color: var(--ink); }
+.chip-copy {
+  all: unset;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 10px 2px;
+}
+.chip-copy:hover { color: var(--orange); }
+.chip-copy:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+.chip-status { font: 9px var(--pixel); color: var(--orange); }
+/* UPI apps live on phones: on desktop the QR is the way in. */
+.on-touch { display: none; }
+@media (hover: hover) and (pointer: fine) { .chip-app { display: none; } }
+@media not ((hover: hover) and (pointer: fine)) { .on-hover { display: none; } .on-touch { display: inline; } }
