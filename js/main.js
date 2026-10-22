@@ -23,15 +23,31 @@ game.challenge = challengeFromUrl();
 if (game.challenge) {
   $('#challenge').textContent = `A friend scored ${game.challenge.toLocaleString('en-US')}. Can you beat it?`;
 }
-game.onGameOver = result => {
-  // Wait for the dog's laugh before taking the picture for the score card.
-  setTimeout(() => {
-    const shot = document.createElement('canvas');
-    shot.width = canvas.width; shot.height = canvas.height;
-    shot.getContext('2d').drawImage(canvas, 0, 0);
-    share.show(result, shot, game.challenge);
-  }, 1500);
+function snapshot() {
+  const shot = document.createElement('canvas');
+  shot.width = canvas.width; shot.height = canvas.height;
+  shot.getContext('2d').drawImage(canvas, 0, 0);
+  return shot;
+}
+let resumeAfterShare = false;
+function openShare(result) {
+  // Freeze play behind the panel; un-pause on close only if we paused it.
+  resumeAfterShare = game.state !== 'title' && !game.paused;
+  if (resumeAfterShare) game.paused = true;
+  $('#corner').hidden = true;
+  share.show(result, snapshot(), game.challenge);
+}
+share.onClose = () => {
+  $('#corner').hidden = false;
+  if (resumeAfterShare) game.paused = false;
 };
+// Wait for the dog's laugh before taking the picture for the score card.
+game.onGameOver = result => setTimeout(() => openShare(result), 1500);
+// Any time: the player's best if they have one, else an invite.
+$('#btnShare').addEventListener('click', () => {
+  sfx.unlock();
+  openShare(game.best > 0 ? { score: game.best, best: true } : null);
+});
 
 // ---- layout: 240 NES pixels tall, as wide as the screen's shape allows, so
 // the game fills the window edge to edge with square pixels.

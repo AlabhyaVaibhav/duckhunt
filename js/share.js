@@ -1,6 +1,10 @@
-// Score sharing: after a game over, a panel offers the system share sheet
-// (with a score card image where supported), X, WhatsApp, copy link and
-// saving the card. Shared links carry ?beat=<score> so friends get a target.
+// Score sharing: after a game over (or any time from the SHARE button), a
+// panel offers the system share sheet (with a card image where supported), X,
+// WhatsApp, copy link and saving the card. Shared links carry ?beat=<score>
+// so friends get a target.
+//
+// What's shared: a game-over result { score, round, mode, ducks }, the
+// player's best { score, best: true }, or null (no score yet: an invite).
 import { NES_W, H, OX } from './scene.js';
 
 const $ = s => document.querySelector(s);
@@ -14,9 +18,15 @@ export function challengeFromUrl() {
 }
 
 const fmt = n => n.toLocaleString('en-US');
-const challengeUrl = score => `${GAME_URL}?beat=${score}`;
-const message = r => `I scored ${fmt(r.score)} in Duck Hunt: Finger Gun, shooting ducks with just my hand. `
-  + `Round ${r.round}, ${r.ducks} ${r.ducks === 1 ? 'duck' : 'ducks'}. Can you beat me?`;
+const ducks = n => `${n} ${n === 1 ? 'duck' : 'ducks'}`;
+const gameName = mode => `Game ${mode === 2 ? 'B' : 'A'}`;
+const shareUrl = r => (r ? `${GAME_URL}?beat=${r.score}` : GAME_URL);
+const message = r => (!r
+  ? 'Duck Hunt in the browser, played with a finger gun: point at your webcam and drop your thumb to shoot. Give it a go!'
+  : r.best
+    ? `My best in Duck Hunt: Finger Gun is ${fmt(r.score)}, shooting ducks with just my hand. Can you beat me?`
+    : `I scored ${fmt(r.score)} in Duck Hunt: Finger Gun, shooting ducks with just my hand. `
+      + `Round ${r.round}, ${ducks(r.ducks)}. Can you beat me?`);
 
 // 1200x630 card: the game-over screen on the left, the score on the right.
 function drawCard(shot, r) {
@@ -38,12 +48,22 @@ function drawCard(shot, r) {
   ctx.textBaseline = 'top';
   line('DUCK HUNT', 70, 40, '#3cbcfc');
   line('FINGER GUN', 128, 22, '#fc7c3c');
-  line('SCORE', 230, 20, '#80d010');
-  line(String(r.score).padStart(6, '0'), 268, 52, '#fcfcfc');
-  line(`ROUND ${r.round}`, 368, 20, '#fcfcfc');
-  line(`${r.ducks} ${r.ducks === 1 ? 'DUCK' : 'DUCKS'}`, 404, 20, '#fcfcfc');
-  line(`GAME ${r.mode === 2 ? 'B' : 'A'}`, 440, 20, '#fcfcfc');
-  line('CAN YOU BEAT IT?', 520, 18, '#fc7c3c');
+  if (r) {
+    line(r.best ? 'MY BEST' : 'SCORE', 230, 20, '#80d010');
+    line(String(r.score).padStart(6, '0'), 268, 52, '#fcfcfc');
+    if (!r.best) {
+      line(`ROUND ${r.round}`, 368, 20, '#fcfcfc');
+      line(ducks(r.ducks).toUpperCase(), 404, 20, '#fcfcfc');
+      line(gameName(r.mode).toUpperCase(), 440, 20, '#fcfcfc');
+    }
+    line('CAN YOU BEAT IT?', 520, 18, '#fc7c3c');
+  } else {
+    line('POINT A', 250, 22, '#fcfcfc');
+    line('FINGER GUN.', 290, 22, '#fcfcfc');
+    line('DROP YOUR', 350, 22, '#fcfcfc');
+    line('THUMB TO SHOOT.', 390, 22, '#fcfcfc');
+    line('PLAY FREE', 520, 18, '#fc7c3c');
+  }
   line(new URL(GAME_URL).host, 566, 12, '#9c9c9c');
   return c;
 }
@@ -67,17 +87,22 @@ export class SharePanel {
   }
 
   get visible() { return !this.el.hidden; }
-  get url() { return challengeUrl(this.result.score); }
+  get url() { return shareUrl(this.result); }
 
-  // `shot` is a canvas of the game-over screen; `challenge` the friend's score, if any.
+  // `shot` is a canvas of the game screen; `challenge` the friend's score, if any.
   show(result, shot, challenge) {
+    const over = result && !result.best;
     this.result = result;
     this.card = drawCard(shot, result);
-    $('#shareScore').textContent = fmt(result.score);
-    $('#shareDetail').textContent = `Round ${result.round} · ${result.ducks} ${result.ducks === 1 ? 'duck' : 'ducks'} · Game ${result.mode === 2 ? 'B' : 'A'}`;
-    $('#shareVs').textContent = !challenge ? ''
+    $('#shareTitle').textContent = over ? 'GAME OVER' : 'SHARE';
+    $('#shareScore').textContent = result ? fmt(result.score) : '';
+    $('#shareDetail').textContent = over ? `Round ${result.round} · ${ducks(result.ducks)} · ${gameName(result.mode)}`
+      : result ? 'Your best score' : '';
+    $('#shareVs').textContent = !challenge || !result ? ''
       : result.score > challenge ? `You beat your friend's ${fmt(challenge)}!`
       : `Your friend's ${fmt(challenge)} still stands. ${fmt(challenge - result.score + 1)} to go.`;
+    $('#shareCta').textContent = result ? 'Challenge your friends to beat it' : 'Invite your friends to play';
+    $('#shareClose').textContent = over ? 'PLAY AGAIN' : 'BACK TO GAME';
     $('#shareImg').src = this.card.toDataURL('image/png');
     this.status.textContent = '';
     this.el.hidden = false;
@@ -117,7 +142,7 @@ export class SharePanel {
   async save() {
     const a = document.createElement('a');
     a.href = URL.createObjectURL(await toBlob(this.card));
-    a.download = `duck-hunt-${this.result.score}.png`;
+    a.download = `duck-hunt-${this.result?.score ?? 'invite'}.png`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }

@@ -108,6 +108,13 @@ function loadTop() {
 function saveTop(v) {
   try { localStorage.setItem('duckhunt.top', String(v)); } catch { /* storage unavailable */ }
 }
+// The player's own best (the TOP SCORE starts at the NES's 12000, which isn't theirs to share).
+function loadBest() {
+  try { return Number(localStorage.getItem('duckhunt.best')) || 0; } catch { return 0; }
+}
+function saveBest(v) {
+  try { localStorage.setItem('duckhunt.best', String(v)); } catch { /* storage unavailable */ }
+}
 export function tutorialDone() {
   try { return localStorage.getItem('duckhunt.tutorialDone') === '1'; } catch { return false; }
 }
@@ -133,6 +140,7 @@ export class Game {
     this.round = 1;
     this.score = 0;
     this.top = loadTop();
+    this.best = loadBest();
     this.hits = Array(DUCKS_PER_ROUND).fill(null);
     this.ducks = [];
     this.shots = 3;
@@ -254,6 +262,7 @@ export class Game {
   addScore(n) {
     this.score += n;
     if (this.score > this.top) this.top = this.score;
+    if (this.score > this.best) this.best = this.score;
   }
 
   update(dt) {
@@ -329,6 +338,8 @@ export class Game {
             this.go('gameOver');
             this.dog.popup('laugh', W / 2, 3.2);
             this.sfx.gameOver();
+            saveTop(this.top);
+            saveBest(this.best);
             this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit });
           } else if (n === DUCKS_PER_ROUND) {
             this.addScore(perfectBonus(this.round));
@@ -351,7 +362,6 @@ export class Game {
 
       case 'gameOver':
         if (this.t > 4.2) {
-          saveTop(this.top);
           this.ducks = [];
           this.go('title');
         }

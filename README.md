@@ -29,7 +29,7 @@ The first time you play with your hand, a short **practice** runs before the gam
 
 The game goes full screen when you press Play; `F` toggles it.
 
-After a game over, a panel offers to share a score card (system share sheet, X, WhatsApp, copy link, or save the image). Shared links end in `?beat=<score>`, so a friend who opens one sees the score to beat on the start panel and title screen.
+A corner bar on every screen has **SHARE** (your best score, or an invite if you haven't scored yet; it pauses the game), **TREAT BAILEY** (the UPI chip-in box) and **?** (help). After a game over, a panel offers to share a score card (system share sheet, X, WhatsApp, copy link, or save the image). Shared links end in `?beat=<score>`, so a friend who opens one sees the score to beat on the start panel and title screen.
 
 `support.html` is the help page: setup, camera and tracking fixes, controls, rules, a UPI "Chip in" box, privacy and a progress reset. The UPI QR codes in `assets/qr/` come from `tools/upi_qr.py` (needs `qrcode`); keep its ID and amounts in step with the page.
 

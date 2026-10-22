@@ -22,6 +22,12 @@
     <canvas id="game" width="256" height="240"></canvas>
   </main>
 
+  <nav id="corner" aria-label="Share and support">
+    <button id="btnShare" class="corner-btn" title="Share the game or your best score"><svg class="ico" viewBox="0 0 8 8" aria-hidden="true"><path d="M6 0h2v1h-2zM4 1h4v1h-4zM2 2h2v1h-2zM6 2h2v1h-2zM0 3h2v1h-2zM0 4h2v1h-2zM2 5h2v1h-2zM6 5h2v1h-2zM4 6h4v1h-4zM6 7h2v1h-2z"/></svg><span>SHARE</span></button>
+    <a class="corner-btn treat" href="support.html#chip-in" target="_blank" rel="noopener" title="Chip in with UPI: keeps the game going and buys Bailey a treat"><svg class="ico" viewBox="0 0 12 7" aria-hidden="true"><path d="M4 0h4v1h-4zM11 0h1v1h-1zM2 1h7v1h-7zM10 1h2v1h-2zM1 2h1v1h-1zM3 2h8v1h-8zM0 3h11v1h-11zM1 4h9v1h-9zM2 5h7v1h-7zM10 5h2v1h-2zM4 6h4v1h-4zM11 6h1v1h-1z"/></svg><span>TREAT BAILEY</span></a>
+    <a class="corner-btn" href="support.html" target="_blank" rel="noopener" title="Help &amp; support" aria-label="Help and support">?</a>
+  </nav>
+
   <aside id="cam" hidden>
     <div class="view">
       <video id="video" playsinline muted></video>
@@ -57,7 +63,7 @@
       <p id="shareDetail" class="detail"></p>
       <p id="shareVs" class="vs"></p>
       <img id="shareImg" alt="Your score card">
-      <p class="detail">Challenge your friends to beat it</p>
+      <p id="shareCta" class="detail">Challenge your friends to beat it</p>
       <div class="buttons">
         <button id="shareNative">SHARE</button>
         <button id="shareX" class="alt">X</button>
@@ -66,8 +72,11 @@
         <button id="shareSave" class="alt">SAVE IMAGE</button>
       </div>
       <p id="shareStatus" class="msg" aria-live="polite"></p>
-      <div class="buttons"><button id="shareClose">PLAY AGAIN</button></div>
-      <p class="keys"><a href="support.html">Help &amp; support</a> · Enjoyed it? <a href="support.html#chip-in">Treat Bailey</a></p>
+      <div class="buttons">
+        <button id="shareClose">PLAY AGAIN</button>
+        <a class="button treat" href="support.html#chip-in" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 12 7" aria-hidden="true"><path d="M4 0h4v1h-4zM11 0h1v1h-1zM2 1h7v1h-7zM10 1h2v1h-2zM1 2h1v1h-1zM3 2h8v1h-8zM0 3h11v1h-11zM1 4h9v1h-9zM2 5h7v1h-7zM10 5h2v1h-2zM4 6h4v1h-4zM11 6h1v1h-1z"/></svg>TREAT BAILEY</a>
+      </div>
+      <p class="keys">Enjoyed it? Chip in with UPI to keep it going (and buy Bailey a treat). · <a href="support.html" target="_blank" rel="noopener">Help &amp; support</a></p>
     </div>
   </div>
 

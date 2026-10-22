@@ -203,6 +203,7 @@
       const msg = document.getElementById('resetMsg');
       try {
         localStorage.removeItem('duckhunt.top');
+        localStorage.removeItem('duckhunt.best');
         localStorage.removeItem('duckhunt.tutorialDone');
         msg.textContent = 'Done. Practice will run next time you play with your hand.';
       } catch {
