@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Duck Hunt: Finger Gun</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main id="stage">
+    <canvas id="game" width="256" height="240"></canvas>
+  </main>
+
+  <aside id="cam" hidden>
+    <div class="view">
+      <video id="video" playsinline muted></video>
+      <canvas id="camOverlay"></canvas>
+    </div>
+    <div class="meter" title="Thumb hammer: raise past the right line to cock, drop past the left line to fire">
+      <div id="meterFill"></div>
+      <span class="mark fire"></span>
+      <span class="mark cock"></span>
+    </div>
+    <div id="camStatus">Camera off</div>
+  </aside>
+
+  <div id="start" class="overlay">
+    <div class="panel">
+      <h1><span>DUCK</span> <span>HUNT</span></h1>
+      <p class="how">Make a finger gun 👉 at the screen. Aim with your index finger. <b>Drop your thumb</b> like a hammer to shoot.</p>
+      <div class="buttons">
+        <button id="btnHand" autofocus>PLAY WITH HAND</button>
+        <button id="btnMouse" class="alt">PLAY WITH MOUSE</button>
+      </div>
+      <p id="startMsg" class="msg"></p>
+      <p class="keys">New to the finger gun? A short practice runs first; replay it any time from PRACTICE on the menu. Sit about an arm's length away with good light.<br>Keys: <kbd>F</kbd> full screen · <kbd>1</kbd>/<kbd>2</kbd> start a game · <kbd>T</kbd> practice · <kbd>Space</kbd> fire · <kbd>P</kbd> pause · <kbd>M</kbd> mute · <kbd>C</kbd> camera preview</p>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

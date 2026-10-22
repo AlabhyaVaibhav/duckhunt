@@ -1,0 +1,123 @@
+:root {
+  --bg: #0c0c0c;
+  --ink: #fcfcfc;
+  --green: #80d010;
+  --blue: #3cbcfc;
+  --orange: #fc7c3c;
+  --font: "Press Start 2P", ui-monospace, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  overflow: hidden;
+}
+
+#stage {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+#game {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  cursor: none;
+  background: #000;
+}
+
+/* Camera preview */
+#cam {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  width: 220px;
+  background: #000;
+  border: 2px solid var(--green);
+  font-size: 8px;
+  line-height: 1.6;
+  z-index: 5;
+}
+#cam[hidden] { display: none; }
+#cam .view { position: relative; aspect-ratio: 4 / 3; }
+#cam video, #cam canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+#cam video { opacity: 0.6; }
+
+.meter {
+  position: relative;
+  height: 8px;
+  margin: 6px 8px 0;
+  background: #222;
+}
+#meterFill {
+  height: 100%;
+  width: 0;
+  background: var(--orange);
+}
+.meter .mark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+}
+.meter .fire { background: var(--orange); }
+.meter .cock { background: var(--green); }
+#camStatus { padding: 6px 8px 8px; color: var(--green); }
+
+/* Start overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.88);
+  z-index: 10;
+  padding: 16px;
+}
+.overlay[hidden] { display: none; }
+.panel {
+  max-width: 560px;
+  text-align: center;
+  border: 4px solid var(--green);
+  padding: 28px 24px;
+  background: #000;
+}
+.panel h1 {
+  margin: 0 0 20px;
+  font-size: clamp(28px, 7vw, 44px);
+  font-weight: normal;
+  color: var(--blue);
+  text-shadow: 4px 4px 0 var(--orange);
+}
+.panel p { font-size: 10px; line-height: 2; margin: 0 0 18px; }
+.panel .how b { color: var(--orange); font-weight: normal; }
+.panel .keys { color: #9c9c9c; font-size: 8px; margin: 18px 0 0; }
+.buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+button {
+  font: inherit;
+  font-size: 11px;
+  padding: 12px 16px;
+  color: #000;
+  background: var(--green);
+  border: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #2c5c00;
+}
+button.alt { background: var(--ink); box-shadow: 4px 4px 0 #7c7c7c; }
+button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 #2c5c00; }
+button:disabled { opacity: 0.5; cursor: wait; }
+kbd { color: var(--ink); }
+.msg { color: var(--orange); min-height: 1em; }
