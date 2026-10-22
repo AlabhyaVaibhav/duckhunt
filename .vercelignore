@@ -3,3 +3,4 @@ serve.py
 README.md
 .env*
 brand/
+supabase/
