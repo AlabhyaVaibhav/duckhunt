@@ -4,7 +4,7 @@ A browser remake of the NES classic. Your webcam watches your hand: point a fing
 
 ## Play
 
-Hosted on Vercel as a static site (no build step). Every push to `main` redeploys.
+https://duckhunt-two.vercel.app, a static Vercel site with no build step. Redeploy with `vercel deploy --prod`.
 
 ## Run locally
 

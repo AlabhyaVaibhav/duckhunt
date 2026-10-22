@@ -1,3 +1,4 @@
 tools/
 serve.py
 README.md
+.env*
