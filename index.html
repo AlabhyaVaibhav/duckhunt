@@ -29,6 +29,7 @@
 
   <nav id="corner" aria-label="Share and support">
     <button id="btnShare" class="corner-btn" title="Share the game or your best score"><svg class="ico" viewBox="0 0 8 8" aria-hidden="true"><path d="M6 0h2v1h-2zM4 1h4v1h-4zM2 2h2v1h-2zM6 2h2v1h-2zM0 3h2v1h-2zM0 4h2v1h-2zM2 5h2v1h-2zM6 5h2v1h-2zM4 6h4v1h-4zM6 7h2v1h-2z"/></svg><span>SHARE</span></button>
+    <button id="btnBoard" class="corner-btn" title="World leaderboard" data-leaderboard hidden><svg class="ico" viewBox="0 0 8 8" aria-hidden="true"><path d="M0 0h8v1h-8zM0 1h1v2h-1zM7 1h1v2h-1zM2 1h4v3h-4zM1 3h1v1h-1zM6 3h1v1h-1zM3 4h2v2h-2zM2 6h4v1h-4zM1 7h6v1h-6z"/></svg><span>TOP 50</span></button>
     <a class="corner-btn treat" href="support.html#chip-in" target="_blank" rel="noopener" title="Chip in with UPI: keeps the game going and buys Bailey a treat"><svg class="ico" viewBox="0 0 12 7" aria-hidden="true"><path d="M4 0h4v1h-4zM11 0h1v1h-1zM2 1h7v1h-7zM10 1h2v1h-2zM1 2h1v1h-1zM3 2h8v1h-8zM0 3h11v1h-11zM1 4h9v1h-9zM2 5h7v1h-7zM10 5h2v1h-2zM4 6h4v1h-4zM11 6h1v1h-1z"/></svg><span>TREAT BAILEY</span></a>
     <a class="corner-btn" href="support.html" target="_blank" rel="noopener" title="Help &amp; support" aria-label="Help and support">?</a>
   </nav>
@@ -67,6 +68,17 @@
       <p class="score"><span id="shareScore">0</span></p>
       <p id="shareDetail" class="detail"></p>
       <p id="shareVs" class="vs"></p>
+      <div id="lbBox" class="lb-box" data-leaderboard hidden>
+        <form id="lbForm" hidden>
+          <label for="lbName">Put your score on the world leaderboard</label>
+          <div class="lb-row">
+            <input id="lbName" name="name" autocomplete="nickname" placeholder="YOUR NAME" spellcheck="false" required>
+            <button id="lbSubmit" type="submit">SUBMIT</button>
+          </div>
+        </form>
+        <p id="lbStatus" class="msg" aria-live="polite"></p>
+        <button id="lbView" type="button" class="alt">VIEW TOP 50</button>
+      </div>
       <img id="shareImg" alt="Your score card">
       <p id="shareCta" class="detail">Challenge your friends to beat it</p>
       <div class="buttons">
@@ -82,6 +94,19 @@
         <a class="button treat" href="support.html#chip-in" target="_blank" rel="noopener"><svg class="ico" viewBox="0 0 12 7" aria-hidden="true"><path d="M4 0h4v1h-4zM11 0h1v1h-1zM2 1h7v1h-7zM10 1h2v1h-2zM1 2h1v1h-1zM3 2h8v1h-8zM0 3h11v1h-11zM1 4h9v1h-9zM2 5h7v1h-7zM10 5h2v1h-2zM4 6h4v1h-4zM11 6h1v1h-1z"/></svg>TREAT BAILEY</a>
       </div>
       <p class="keys">Enjoyed it? Chip in with UPI to keep it going (and buy Bailey a treat). · <a href="support.html" target="_blank" rel="noopener">Help &amp; support</a></p>
+    </div>
+  </div>
+
+  <div id="board" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="boardTitle">
+    <div class="panel board">
+      <h2 id="boardTitle">WORLD TOP 50</h2>
+      <table>
+        <thead><tr><th>#</th><th>NAME</th><th>SCORE</th><th>RND</th></tr></thead>
+        <tbody id="boardRows"></tbody>
+      </table>
+      <p id="boardMsg" class="detail" aria-live="polite"></p>
+      <div class="buttons"><button id="boardClose">CLOSE</button></div>
+      <p class="keys">Your name and score are public. One entry per player: your best run.</p>
     </div>
   </div>
 

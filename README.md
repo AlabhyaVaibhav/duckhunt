@@ -56,6 +56,8 @@ Hit boxes are a few pixels more forgiving than the Zapper's, because hand tracki
 | `js/draw.js` | Shared drawing helpers and palette |
 | `js/scene.js` | Composes tree, bush, grass and dirt |
 | `js/audio.js` | Synthesised sound effects and jingles (WebAudio) |
+| `js/leaderboard.js` | World top 50 and score submission (Supabase REST) |
+| `js/config.js` | Supabase URL and publishable key |
 | `js/share.js` | Game-over share panel, score card image, `?beat=` challenge links |
 | `js/main.js` | Boot, input, main loop |
 
@@ -76,6 +78,20 @@ python3 tools/extract.py path/to/super_duck_hunt.gif out/boxes.json assets/   # 
 ```
 
 `assets/og.png` is the link-preview image; rebuild it with `python3 tools/og.py . path/to/PressStart2P-Regular.ttf`.
+
+## World leaderboard
+
+After a game over, players can put their score on a world top 50 under a name (up to 10 characters); **TOP 50** in the corner bar shows the board. Each browser gets a random player ID, so a player's runs count as one entry (their best), and a new name renames their entry.
+
+Scores live in Supabase. The browser can only call two database functions, `submit_score` and `leaderboard` (`supabase/migrations/`), which reject scores the real game can't produce: points in steps of 100, at most 60,000 a round, at least 6 ducks per cleared round, and one submission per player every 15 seconds. A determined cheater can still post a plausible fake score, as with any client-side game.
+
+The leaderboard is hidden until `js/config.js` has a project URL and publishable key. To set it up:
+
+```sh
+supabase link --project-ref <ref>
+supabase db push                      # applies supabase/migrations
+supabase projects api-keys --project-ref <ref>   # copy the publishable (or anon) key into js/config.js
+```
 
 ## Brand assets
 

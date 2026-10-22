@@ -182,3 +182,32 @@ a.button.treat {
 }
 a.button.treat:hover { color: #000; }
 a.button.treat .ico { height: 11px; }
+
+/* World leaderboard */
+.lb-box { margin: 0 0 16px; }
+.lb-box label { display: block; font-size: 9px; color: var(--green); margin-bottom: 10px; }
+.lb-row { display: flex; gap: 8px; justify-content: center; }
+#lbName {
+  font: 12px var(--font);
+  width: 15ch;
+  padding: 10px;
+  color: var(--ink);
+  background: #000;
+  border: 2px solid var(--ink);
+  text-transform: uppercase;
+}
+#lbName:focus { outline: none; border-color: var(--green); }
+.lb-box .msg { margin: 10px 0; font-size: 9px; }
+.lb-box .msg:empty { display: none; }
+#lbView { font-size: 9px; padding: 9px 12px; margin-top: 10px; }
+
+.panel.board { width: min(560px, 100%); max-height: calc(100vh - 32px); overflow-y: auto; }
+.board h2 { margin: 0 0 16px; font-size: 18px; font-weight: normal; color: var(--blue); }
+.board table { width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px; }
+.board th { color: var(--green); font-weight: normal; padding: 0 6px 10px; text-align: left; }
+.board td { padding: 7px 6px; border-top: 1px solid #222; text-align: left; }
+.board th:nth-child(3), .board td:nth-child(3), .board th:nth-child(4), .board td:nth-child(4) { text-align: right; }
+.board td:first-child { color: #9c9c9c; width: 3.5em; }
+.board tr.me td { color: #000; background: var(--orange); }
+.board tr.gap td { text-align: center; color: #9c9c9c; border-top: none; }
+.board .detail:empty { display: none; }

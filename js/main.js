@@ -4,6 +4,7 @@ import { Sfx } from './audio.js';
 import { HandGun } from './hand.js';
 import { Game, tutorialDone } from './game.js';
 import { SharePanel, challengeFromUrl } from './share.js';
+import { Leaderboard } from './leaderboard.js';
 
 const $ = s => document.querySelector(s);
 const canvas = $('#game');
@@ -15,8 +16,10 @@ await buildSprites();
 const sfx = new Sfx();
 const game = new Game(sfx);
 const share = new SharePanel();
-// While the share panel is up, finger-gun shots shouldn't start a game behind it.
-const hand = new HandGun({ width: W, height: H, onFire: (x, y) => { if (!share.visible) game.fire(x, y); } });
+const board = new Leaderboard();
+const modalOpen = () => share.visible || board.visible;
+// While a panel is up, finger-gun shots shouldn't start a game behind it.
+const hand = new HandGun({ width: W, height: H, onFire: (x, y) => { if (!modalOpen()) game.fire(x, y); } });
 
 // ---- sharing: a friend's link sets a score to beat; game over offers to share ours.
 game.challenge = challengeFromUrl();
@@ -29,18 +32,35 @@ function snapshot() {
   shot.getContext('2d').drawImage(canvas, 0, 0);
   return shot;
 }
-let resumeAfterShare = false;
-function openShare(result) {
-  // Freeze play behind the panel; un-pause on close only if we paused it.
-  resumeAfterShare = game.state !== 'title' && !game.paused;
-  if (resumeAfterShare) game.paused = true;
+// Panels (share, leaderboard) freeze play behind them; closing the last one
+// un-pauses, but only if a panel was what paused it.
+let resumeAfterPanel = false;
+function panelOpening() {
+  if (!modalOpen()) {
+    resumeAfterPanel = game.state !== 'title' && !game.paused;
+    if (resumeAfterPanel) game.paused = true;
+  }
   $('#corner').hidden = true;
-  share.show(result, snapshot(), game.challenge);
 }
-share.onClose = () => {
+function panelClosed() {
+  if (modalOpen()) return;
   $('#corner').hidden = false;
-  if (resumeAfterShare) game.paused = false;
-};
+  if (resumeAfterPanel) game.paused = false;
+}
+share.onClose = board.onClose = panelClosed;
+
+function openShare(result) {
+  panelOpening();
+  share.show(result, snapshot(), game.challenge);
+  board.offer(result && !result.best ? result : null);
+}
+function openBoard() {
+  panelOpening();
+  if (share.visible) { share.el.hidden = true; }
+  board.show();
+}
+$('#btnBoard').addEventListener('click', openBoard);
+$('#lbView').addEventListener('click', openBoard);
 // Wait for the dog's laugh before taking the picture for the score card.
 game.onGameOver = result => setTimeout(() => openShare(result), 1500);
 // Any time: the player's best if they have one, else an invite.
@@ -88,8 +108,8 @@ canvas.addEventListener('pointerdown', e => {
 let currentAim = null;
 window.addEventListener('keydown', e => {
   if ($('#start').hidden === false) return;
-  if (share.visible) {
-    if (e.key === 'Escape') share.hide();
+  if (modalOpen()) {
+    if (e.key === 'Escape') (board.visible ? board : share).hide();
     return;
   }
   switch (e.key) {
