@@ -3,6 +3,6 @@
 // leaderboard functions (see supabase/migrations). Leave empty to hide the
 // leaderboard.
 export const SUPABASE = {
-  url: '',
-  key: '',
+  url: 'https://dwxoibrwgufsyannrbtu.supabase.co',
+  key: 'sb_publishable_CPwOLmv4N4K6xdbHubDg7w_W7PatnuX',
 };
