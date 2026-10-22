@@ -77,4 +77,8 @@ python3 tools/extract.py path/to/super_duck_hunt.gif out/boxes.json assets/   # 
 
 `assets/og.png` is the link-preview image; rebuild it with `python3 tools/og.py . path/to/PressStart2P-Regular.ttf`.
 
+## Brand assets
+
+`brand/` holds images for the X account (not deployed): `x-avatar-400.png` (profile picture), `x-header-1500x500.png` (banner), and three posts: `x-post-launch-1600x900.png`, `x-post-howto-1600x900.png` and `x-post-shot.gif` (animated). The favicons (`favicon.ico`, `favicon.svg`, `assets/icons/`) use the same mark: the startled black duck on NES sky. All are drawn from the game's sprites, plus a pixel finger-gun hand from `tools/pixelhand.py`. Rebuild them with `python3 tools/brand.py path/to/PressStart2P-Regular.ttf`.
+
 Sound and music are synthesised in code (original tunes).
