@@ -20,7 +20,7 @@ function stored(key, make) {
 }
 
 // A random id for this browser, so a player's runs count as one entry.
-const playerId = () => stored('duckhunt.player', () => crypto.randomUUID());
+export const playerId = () => stored('duckhunt.player', () => crypto.randomUUID());
 
 // Upper case, the characters the database accepts, single spaces, 10 long.
 export const cleanName = s => s.toUpperCase().replace(/[^A-Z0-9 .!?_-]/g, '').replace(/\s+/g, ' ').slice(0, NAME_MAX);

@@ -65,6 +65,7 @@ Hit boxes are a few pixels more forgiving than the Zapper's, because hand tracki
 | `js/scene.js` | Composes tree, bush, grass and dirt |
 | `js/audio.js` | Synthesised sound effects and jingles (WebAudio) |
 | `js/leaderboard.js` | World top 50 and score submission (Supabase REST) |
+| `js/analytics.js` | Anonymous gameplay events for the stats queries |
 | `js/config.js` | Supabase URL and publishable key |
 | `js/share.js` | Game-over share panel, score card image, `?beat=` challenge links |
 | `js/main.js` | Boot, input, main loop |
@@ -100,6 +101,12 @@ supabase link --project-ref <ref>
 supabase db push                      # applies supabase/migrations
 supabase projects api-keys --project-ref <ref>   # copy the publishable (or anon) key into js/config.js
 ```
+
+## Game stats
+
+The game also logs anonymous gameplay events to the same Supabase project through one write-only function, `log_event` (`supabase/migrations/20261025120000_game_events.sql`): gun picked on the start screen, camera failures, practice started/finished/quit, games started, rounds reached, game overs with score, and share button presses. Each event carries the random browser ID and nothing else about the player; at most 60 per player a minute are kept, and anything invalid is dropped silently. Nothing is sent from localhost (events are logged to the console instead).
+
+To read them, paste a query from `supabase/queries/stats.sql` into the Supabase dashboard's SQL Editor: daily players and games (finger vs mouse), where games end, the share of games reaching each round, the finger-gun funnel (chose it → camera worked → practice → played), and scores per gun and game type.
 
 ## Brand assets
 

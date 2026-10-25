@@ -5,6 +5,7 @@ import { HandGun } from './hand.js';
 import { Game, tutorialDone } from './game.js';
 import { SharePanel, challengeFromUrl } from './share.js';
 import { Leaderboard } from './leaderboard.js';
+import { track } from './analytics.js';
 
 const $ = s => document.querySelector(s);
 const canvas = $('#game');
@@ -15,6 +16,7 @@ await buildSprites();
 
 const sfx = new Sfx();
 const game = new Game(sfx);
+game.track = track;
 const share = new SharePanel();
 const board = new Leaderboard();
 const modalOpen = () => share.visible || board.visible;
@@ -60,6 +62,9 @@ function openBoard() {
   board.show();
 }
 $('#btnBoard').addEventListener('click', openBoard);
+for (const id of ['shareNative', 'shareX', 'shareWa', 'shareCopy', 'shareSave']) {
+  $(`#${id}`).addEventListener('click', () => track('share'));
+}
 $('#lbView').addEventListener('click', openBoard);
 // Wait for the dog's laugh before taking the picture for the score card.
 game.onGameOver = result => setTimeout(() => openShare(result), 1500);
@@ -136,11 +141,13 @@ window.addEventListener('keydown', e => {
 const startMsg = $('#startMsg');
 $('#btnMouse').addEventListener('click', () => {
   sfx.unlock();
+  track('visit', { gun: 'mouse' });
   toggleFullscreen(true);
   $('#start').hidden = true;
 });
 $('#btnHand').addEventListener('click', async () => {
   sfx.unlock();
+  track('visit', { gun: 'finger' });
   toggleFullscreen(true);
   for (const b of document.querySelectorAll('.buttons button')) b.disabled = true;
   try {
@@ -151,6 +158,7 @@ $('#btnHand').addEventListener('click', async () => {
     if (!tutorialDone()) game.startTutorial();
   } catch (err) {
     console.error(err);
+    track('camera_fail');
     $('#cam').hidden = true;
     startMsg.textContent = err?.name === 'NotAllowedError'
       ? 'Camera permission denied. Allow it, or play with the mouse.'

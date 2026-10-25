@@ -156,6 +156,7 @@ export class Game {
     this.gun = null;        // 'finger' or 'mouse': what fired this game's shots
     this.challenge = null;  // score from a friend's share link, shown on the title
     this.onGameOver = null; // called with { score, round, mode, ducks, gun }
+    this.track = () => {};  // analytics: (kind, { gun, mode, round, score })
   }
 
   // ---- input
@@ -173,7 +174,7 @@ export class Game {
     }
     if (this.state === 'tutorial') {
       this.tutorial.fire(x, y);
-      if (this.tutorial.done) { saveTutorialDone(); this.newGame(1); }
+      if (this.tutorial.done) { saveTutorialDone(); this.track('tutorial_done'); this.newGame(1); }
       return;
     }
     if (this.state !== 'flying' || this.shots <= 0) return;
@@ -210,11 +211,13 @@ export class Game {
   startTutorial() {
     this.tutorial = new Tutorial(this);
     this.ducks = [];
+    this.track('tutorial_start');
     this.go('tutorial');
   }
 
   quitTutorial() {
     saveTutorialDone();
+    this.track('tutorial_quit');
     this.go('title');
   }
 
@@ -224,6 +227,7 @@ export class Game {
     this.score = 0;
     this.ducksHit = 0;
     this.gun = null;
+    this.track('game_start', { gun: this.input.hand ? 'finger' : 'mouse', mode });
     this.startRound();
   }
 
@@ -345,7 +349,9 @@ export class Game {
             this.sfx.gameOver();
             saveTop(this.top);
             saveBest(this.best);
-            this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit, gun: this.gun ?? 'mouse' });
+            const gun = this.gun ?? (this.input.hand ? 'finger' : 'mouse');
+            this.track('game_over', { gun, mode: this.mode, round: this.round, score: this.score });
+            this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit, gun });
           } else if (n === DUCKS_PER_ROUND) {
             this.addScore(perfectBonus(this.round));
             this.go('perfect');
@@ -361,6 +367,7 @@ export class Game {
       case 'roundClear':
         if (this.t > (this.state === 'perfect' ? 3 : 1.8)) {
           this.round++;
+          this.track('round', { gun: this.gun, mode: this.mode, round: this.round });
           this.startRound();
         }
         break;
