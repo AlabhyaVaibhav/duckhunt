@@ -208,6 +208,8 @@ a.button.treat .ico { height: 11px; }
 .board td { padding: 7px 6px; border-top: 1px solid #222; text-align: left; }
 .board th:nth-child(3), .board td:nth-child(3), .board th:nth-child(4), .board td:nth-child(4) { text-align: right; }
 .board td:first-child { color: #9c9c9c; width: 3.5em; }
-.board tr.me td { color: #000; background: var(--orange); }
+.board td.gun { color: #9c9c9c; }
+.board td.gun.finger { color: var(--green); }
+.board tr.me td, .board tr.me td.gun { color: #000; background: var(--orange); }
 .board tr.gap td { text-align: center; color: #9c9c9c; border-top: none; }
 .board .detail:empty { display: none; }

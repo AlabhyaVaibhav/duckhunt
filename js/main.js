@@ -19,7 +19,7 @@ const share = new SharePanel();
 const board = new Leaderboard();
 const modalOpen = () => share.visible || board.visible;
 // While a panel is up, finger-gun shots shouldn't start a game behind it.
-const hand = new HandGun({ width: W, height: H, onFire: (x, y) => { if (!modalOpen()) game.fire(x, y); } });
+const hand = new HandGun({ width: W, height: H, onFire: (x, y) => { if (!modalOpen()) game.fire(x, y, 'finger'); } });
 
 // ---- sharing: a friend's link sets a score to beat; game over offers to share ours.
 game.challenge = challengeFromUrl();
@@ -102,7 +102,7 @@ canvas.addEventListener('pointermove', e => { mouse = toGame(e); mouseAt = perfo
 canvas.addEventListener('pointerdown', e => {
   mouse = toGame(e);
   mouseAt = performance.now();
-  game.fire(mouse.x, mouse.y);
+  game.fire(mouse.x, mouse.y, 'mouse');
 });
 
 let currentAim = null;
@@ -115,7 +115,7 @@ window.addEventListener('keydown', e => {
   switch (e.key) {
     case ' ':
       e.preventDefault();
-      if (currentAim) game.fire(currentAim.x, currentAim.y);
+      if (currentAim) game.fire(currentAim.x, currentAim.y, 'mouse');
       break;
     case '1': case 'a': if (game.state === 'title') game.newGame(1); break;
     case '2': case 'b': if (game.state === 'title') game.newGame(2); break;

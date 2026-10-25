@@ -153,15 +153,17 @@ export class Game {
     this.shake = 0;
     this.paused = false;
     this.ducksHit = 0;
+    this.gun = null;        // 'finger' or 'mouse': what fired this game's shots
     this.challenge = null;  // score from a friend's share link, shown on the title
-    this.onGameOver = null; // called with { score, round, mode, ducks }
+    this.onGameOver = null; // called with { score, round, mode, ducks, gun }
   }
 
   // ---- input
 
   setAim(aim) { this.aim = aim; }
 
-  fire(x, y) {
+  // `gun` is 'finger' (the thumb trigger) or 'mouse' (a click or the space bar).
+  fire(x, y, gun = 'mouse') {
     if (this.paused) return;
     if (this.state === 'title') {
       const item = this.menuAt(x, y);
@@ -176,6 +178,8 @@ export class Game {
     }
     if (this.state !== 'flying' || this.shots <= 0) return;
     this.shots--;
+    // A single click or space bar shot makes it a mouse run.
+    if (gun === 'mouse' || !this.gun) this.gun = gun;
     this.lastShotT = this.t;
     this.sfx.shot();
     this.effects.push({ x, y, t: 0 });
@@ -219,6 +223,7 @@ export class Game {
     this.round = 1;
     this.score = 0;
     this.ducksHit = 0;
+    this.gun = null;
     this.startRound();
   }
 
@@ -340,7 +345,7 @@ export class Game {
             this.sfx.gameOver();
             saveTop(this.top);
             saveBest(this.best);
-            this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit });
+            this.onGameOver?.({ score: this.score, round: this.round, mode: this.mode, ducks: this.ducksHit, gun: this.gun ?? 'mouse' });
           } else if (n === DUCKS_PER_ROUND) {
             this.addScore(perfectBonus(this.round));
             this.go('perfect');

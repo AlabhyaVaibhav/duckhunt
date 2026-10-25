@@ -6,6 +6,8 @@ const $ = s => document.querySelector(s);
 export const LEADERBOARD_ON = Boolean(SUPABASE.url && SUPABASE.key);
 const NAME_MAX = 10;
 const fmt = n => n.toLocaleString('en-US');
+// How a run was played; older entries predate tracking it.
+const GUNS = { finger: 'FINGER', mouse: 'MOUSE' };
 
 function stored(key, make) {
   try {
@@ -79,7 +81,7 @@ export class Leaderboard {
     this.status.textContent = 'Saving…';
     try {
       const [row] = await rpc('submit_score', {
-        p_player: playerId(), p_name: name, p_score: r.score, p_round: r.round, p_mode: r.mode, p_ducks: r.ducks,
+        p_player: playerId(), p_name: name, p_score: r.score, p_round: r.round, p_mode: r.mode, p_ducks: r.ducks, p_gun: r.gun,
       });
       this.form.hidden = true;
       this.status.textContent = row.best > r.score
@@ -103,12 +105,13 @@ export class Leaderboard {
       msg.textContent = rows.length ? '' : 'No scores yet. Be the first!';
       rows.forEach((row, i) => {
         // Past the top 50 there's only the player's own row: mark the gap.
-        if (i === 50) body.append(Object.assign(document.createElement('tr'), { className: 'gap', innerHTML: '<td colspan="4">...</td>' }));
+        if (i === 50) body.append(Object.assign(document.createElement('tr'), { className: 'gap', innerHTML: '<td colspan="5">...</td>' }));
         const tr = document.createElement('tr');
         if (row.is_me) tr.className = 'me';
-        for (const v of [row.rank, row.name, fmt(row.score), row.round]) {
+        for (const v of [row.rank, row.name, fmt(row.score), row.round, GUNS[row.gun] ?? '-']) {
           tr.append(Object.assign(document.createElement('td'), { textContent: String(v) }));
         }
+        tr.lastChild.className = `gun ${row.gun ?? ''}`;
         body.append(tr);
       });
     } catch (err) {

@@ -3,7 +3,7 @@
 // WhatsApp, copy link and saving the card. Shared links carry ?beat=<score>
 // so friends get a target.
 //
-// What's shared: a game-over result { score, round, mode, ducks }, the
+// What's shared: a game-over result { score, round, mode, ducks, gun }, the
 // player's best { score, best: true }, or null (no score yet: an invite).
 import { NES_W, H, OX } from './scene.js';
 
@@ -20,12 +20,13 @@ export function challengeFromUrl() {
 const fmt = n => n.toLocaleString('en-US');
 const ducks = n => `${n} ${n === 1 ? 'duck' : 'ducks'}`;
 const gameName = mode => `Game ${mode === 2 ? 'B' : 'A'}`;
+const gunName = gun => (gun === 'finger' ? 'Finger gun' : 'Mouse');
 const shareUrl = r => (r ? `${GAME_URL}?beat=${r.score}` : GAME_URL);
 const message = r => (!r
   ? 'Duck Hunt in the browser, played with a finger gun: point at your webcam and drop your thumb to shoot. Give it a go!'
   : r.best
     ? `My best in Duck Hunt: Finger Gun is ${fmt(r.score)}, shooting ducks with just my hand. Can you beat me?`
-    : `I scored ${fmt(r.score)} in Duck Hunt: Finger Gun, shooting ducks with just my hand. `
+    : `I scored ${fmt(r.score)} in Duck Hunt: Finger Gun, ${r.gun === 'finger' ? 'shooting ducks with just my hand' : 'playing with the mouse'}. `
       + `Round ${r.round}, ${ducks(r.ducks)}. Can you beat me?`);
 
 // 1200x630 card: the game-over screen on the left, the score on the right.
@@ -54,7 +55,7 @@ function drawCard(shot, r) {
     if (!r.best) {
       line(`ROUND ${r.round}`, 368, 20, '#fcfcfc');
       line(ducks(r.ducks).toUpperCase(), 404, 20, '#fcfcfc');
-      line(gameName(r.mode).toUpperCase(), 440, 20, '#fcfcfc');
+      line(`${gameName(r.mode)} / ${gunName(r.gun)}`.toUpperCase(), 440, 20, '#fcfcfc');
     }
     line('CAN YOU BEAT IT?', 520, 18, '#fc7c3c');
   } else {
@@ -96,7 +97,7 @@ export class SharePanel {
     this.card = drawCard(shot, result);
     $('#shareTitle').textContent = over ? 'GAME OVER' : 'SHARE';
     $('#shareScore').textContent = result ? fmt(result.score) : '';
-    $('#shareDetail').textContent = over ? `Round ${result.round} · ${ducks(result.ducks)} · ${gameName(result.mode)}`
+    $('#shareDetail').textContent = over ? `Round ${result.round} · ${ducks(result.ducks)} · ${gameName(result.mode)} · ${gunName(result.gun)}`
       : result ? 'Your best score' : '';
     $('#shareVs').textContent = !challenge || !result ? ''
       : result.score > challenge ? `You beat your friend's ${fmt(challenge)}!`
